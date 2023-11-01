@@ -214,6 +214,67 @@ primary key (petid),
 constraint fk_pet_owners foreign key (ownerid) references owners(ownerid) -- fk e foreign key adica cheie secundara
 );
 
+select * from owners;
+select * from pets;
+insert into pets (race, dateOfBirth, ownerid)
+values('european', '2020-02-15', 8);
+
+-- Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails 
+-- (`petclinic`.`pets`, CONSTRAINT `fk_pet_owners` FOREIGN KEY (`ownerid`) REFERENCES `owners` (`ownerid`))
+
+delete from pets where ownerid = 6;
+delete from owners where ownerid = 8;
+
+insert into pets (race, dateOfBirth, ownerid)
+values('spitz', '2021-12-07', 8);
+
+insert into pets (race, dateOfBirth, ownerid)
+values('dog german', '2015-07-05', 6);
+
+insert into pets (race, dateOfBirth, ownerid)
+values('pisica norvegiana', '2016-03-06', 6);
+
+select * from owners;
+select * from pets;
+select * from owners cross join pets;
+select * from owners inner join pets on owners.ownerid = pets.ownerid; -- la inner join este important sa aplicam conditia pentru cheia primara din prima tabela si cheia secundara din a doua tabela 'owners.ownerid = pets.ownerid'
+select * from owners left join pets on owners.ownerid = pets.ownerid;
+select * from owners left join pets on owners.ownerid = pets.ownerid where pets.ownerid is null; -- verific care proprietar nu are animale 'where pets.ownerid is null'
+select * from owners left join pets on owners.ownerid = pets.ownerid where pets.ownerid is not null; -- rezultatele sunt identice cu inner join
+
+-- Instructiuni echivalente 
+select * from owners right join pets on owners.ownerid = pets.ownerid;
+select * from pets left join owners on owners.ownerid = pets.ownerid; 
+ 
+select * from owners right join pets on owners.ownerid = pets.ownerid where owners.ownerid is null; 
+select * from owners right join pets on owners.ownerid = pets.ownerid where owners.ownerid is not null; 
+
+-- Cross join - Se vor aduce toate combinatiile intre inregistrarile din dreapta si cea din stanga
+-- Inner join - Se vor aduce toate datele care exista in ambele tabele, comparatia facandu-se pe coloana pe care se face conditia de join
+-- Left join - se duc toate inregistrarile din tabela din stanga si se compara cu cele din dreapta
+		-- Astfel se vor aduce toate randurile din tabela din stanga, iar pe coloanele aferente tabelei din dreapta se va completa doar pentru randurile care au echivalent
+        -- (adica cele a caror cheie primara exista in tabela din dreapta)
+-- Right join - se aduc toate inregistrarile din tabela din dreapta si se compara cu cele din stanga.
+		-- Asfel se vor aduce toate randurile din tabela din dreapta, iar pe coloanele aferente tabelei din stanga se va completa doar pentru randurile care au echivalent.
+		-- (adica cele a caror cheie primara exista in tabela din stanga)
+        
+select * from owners;
+select * from owners order by dateOfBirth; -- sortarea se va face by default ascendent
+select * from owners order by dateOfBirthdesc; -- desc = descending
+select * from owners order by age desc limit 1;
+select max(age) from owners;
+
+-- In mod normal filtrarea se face cu clauza where, singura exceptie fiind functiile agregate care se pot filtra doar cu clauza HAVING
+select o.ownerid, firstName, lastName, count(petid)
+from owners o inner join pets p on o.ownerid = p.ownerid
+group by o.ownerid, firstName, lastName
+having count(petid)>2;
+
+select o.ownerid, firstName, lastName, race, o.dateOfBirth owner, p.dateOfBirth pet 
+from owners o inner join pets p on o.ownerid = p.ownerid;
+
+select * from owners;
+select * from pets;
 
 
 
